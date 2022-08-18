@@ -1,5 +1,5 @@
 export const testData = {
-  entityName: "Notes",
+  entityName: "Account",
   fields: [
     {
       fieldName: "Title",
