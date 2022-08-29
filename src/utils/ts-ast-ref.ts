@@ -1,57 +1,5 @@
 import ts = require("typescript");
-
-function makeFactorialFunction() {
-  return ts.factory.createClassDeclaration(
-    [
-      ts.factory.createDecorator(
-        ts.factory.createCallExpression(
-          ts.factory.createIdentifier("Module"),
-          undefined,
-          [
-            ts.factory.createObjectLiteralExpression(
-              [
-                ts.factory.createPropertyAssignment(
-                  ts.factory.createIdentifier("imports"),
-                  ts.factory.createArrayLiteralExpression(
-                    [ts.factory.createIdentifier("OrderModuleBase")],
-                    false
-                  )
-                ),
-                ts.factory.createPropertyAssignment(
-                  ts.factory.createIdentifier("controllers"),
-                  ts.factory.createArrayLiteralExpression(
-                    [ts.factory.createIdentifier("OrderController")],
-                    false
-                  )
-                ),
-                ts.factory.createPropertyAssignment(
-                  ts.factory.createIdentifier("providers"),
-                  ts.factory.createArrayLiteralExpression(
-                    [ts.factory.createIdentifier("OrderService")],
-                    false
-                  )
-                ),
-                ts.factory.createPropertyAssignment(
-                  ts.factory.createIdentifier("exports"),
-                  ts.factory.createArrayLiteralExpression(
-                    [ts.factory.createIdentifier("OrderService")],
-                    false
-                  )
-                ),
-              ],
-              true
-            ),
-          ]
-        )
-      ),
-    ],
-    [ts.factory.createModifier(ts.SyntaxKind.ExportKeyword)],
-    ts.factory.createIdentifier("OrderModule"),
-    undefined,
-    undefined,
-    []
-  );
-}
+/* typescript 4.7
 const calssD = ts.factory.createClassDeclaration(
   [
     ts.factory.createDecorator(
@@ -102,9 +50,79 @@ const calssD = ts.factory.createClassDeclaration(
   undefined,
   []
 );
+*/
 
+// typescript-4.8 support, decorators are place inside ModifiersArray
+const calssD = ts.factory.createClassDeclaration(
+  [
+    ts.factory.createDecorator(
+      ts.factory.createCallExpression(
+        ts.factory.createIdentifier("Module"),
+        undefined,
+        [
+          ts.factory.createObjectLiteralExpression(
+            [
+              ts.factory.createPropertyAssignment(
+                ts.factory.createIdentifier("imports"),
+                ts.factory.createArrayLiteralExpression(
+                  [ts.factory.createIdentifier("OrderModuleBase")],
+                  false
+                )
+              ),
+              ts.factory.createPropertyAssignment(
+                ts.factory.createIdentifier("controllers"),
+                ts.factory.createArrayLiteralExpression(
+                  [ts.factory.createIdentifier("OrderController")],
+                  false
+                )
+              ),
+              ts.factory.createPropertyAssignment(
+                ts.factory.createIdentifier("providers"),
+                ts.factory.createArrayLiteralExpression(
+                  [ts.factory.createIdentifier("OrderService")],
+                  false
+                )
+              ),
+              ts.factory.createPropertyAssignment(
+                ts.factory.createIdentifier("exports"),
+                ts.factory.createArrayLiteralExpression(
+                  [ts.factory.createIdentifier("OrderService")],
+                  false
+                )
+              ),
+            ],
+            true
+          ),
+        ]
+      )
+    ),
+    ts.factory.createModifier(ts.SyntaxKind.ExportKeyword),
+  ],
+  ts.factory.createIdentifier("OrderModule"),
+  undefined,
+  undefined,
+  []
+);
+/* typescript 4.7
 const importFile = ts.factory.createImportDeclaration(
   undefined,
+  undefined,
+  ts.factory.createImportClause(
+    false,
+    undefined,
+    ts.factory.createNamedImports([
+      ts.factory.createImportSpecifier(
+        false,
+        undefined,
+        ts.factory.createIdentifier("Module")
+      ),
+    ])
+  ),
+  ts.factory.createStringLiteral("@nestjs/common"),
+  undefined
+);
+*/
+const importFile = ts.factory.createImportDeclaration(
   undefined,
   ts.factory.createImportClause(
     false,
@@ -133,11 +151,11 @@ const printer = ts.createPrinter({
   omitTrailingSemicolon: false,
 });
 
-const result = printer.printNode(
-  ts.EmitHint.Unspecified,
-  makeFactorialFunction(),
-  resultFile
-);
+// const result = printer.printNode(
+//   ts.EmitHint.Unspecified,
+//   makeFactorialFunction(),
+//   resultFile
+// );
 // console.log(result);
 
 const sourceFile = ts.factory.updateSourceFile(
@@ -145,13 +163,13 @@ const sourceFile = ts.factory.updateSourceFile(
   ts.factory.createNodeArray([importFile, calssD])
 );
 
-// console.log(printer.printFile(sourceFile));
+console.log(printer.printFile(sourceFile));
 // console.log(sourceFile);
 // sourceFile.forEachChild((child) => console.log(ts.SyntaxKind[child.kind]));
-let importDecl;
-sourceFile.forEachChild((child) => {
-  if (ts.SyntaxKind[child.kind] === "ImportDeclaration") {
-    importDecl = child;
-  }
-});
-console.log(importDecl);
+// let importDecl;
+// sourceFile.forEachChild((child) => {
+//   if (ts.SyntaxKind[child.kind] === "ImportDeclaration") {
+//     importDecl = child;
+//   }
+// });
+// console.log(importDecl);

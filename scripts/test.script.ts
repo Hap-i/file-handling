@@ -1,22 +1,19 @@
 import ts from "typescript";
-import { addImport } from "../src/utils/ast";
+import { genModule, genModuleCode } from "../src/resource/module/module.gen";
+import { genClass, genImport } from "../src/utils/ast";
 
-const printer = ts.createPrinter({
-  newLine: ts.NewLineKind.LineFeed,
-  omitTrailingSemicolon: false,
-});
-
-const resultFile = ts.createSourceFile(
-  "someFileName.ts",
-  "",
-  ts.ScriptTarget.Latest,
-  /*setParentNodes*/ false,
-  ts.ScriptKind.TS
-);
-
-const s1 = ["Account", "AccountSchema"];
-const s2 = "./schemas/account.schema";
-const node = addImport(s1, s2);
-
-const result = printer.printNode(ts.EmitHint.Unspecified, node, resultFile);
-console.log(result);
+const importsArray = [
+  {
+    importItems: ["Module"],
+    importFrom: "@nestjs/common",
+  },
+  {
+    importItems: ["MongooseModule"],
+    importFrom: "@nestjs/mongoose",
+  },
+];
+const classObj = {
+  name: "Account",
+};
+genModule(importsArray, classObj);
+// console.log(code);

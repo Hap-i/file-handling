@@ -1,16 +1,27 @@
-import * as fse from "fs-extra";
+import ts from "typescript";
 
-// const srcDir = "./static";
-// const destDir = "./generated-code";
+const code = `import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import mongoose, { Document } from 'mongoose';
+import { User } from 'src/user/schemas/user.schema';
 
-// copy dir
-// async function copyFiles() {
-//   try {
-//     await fse.copy(srcDir, destDir);
-//     console.log("success!");
-//   } catch (err) {
-//     console.error(err);
-//   }
-// }
+@Schema({ timestamps: true })
+export class Account {
+  @Prop({ required: true, default: 'New Account' })
+  name: string;
 
-// copyFiles();
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User' })
+  owner: User;
+}
+export type AccountDocument = Account & Document;
+
+export const AccountSchema = SchemaFactory.createForClass(Account);`;
+
+const node = ts.createSourceFile(
+  "someFileName.ts",
+  code,
+  ts.ScriptTarget.Latest,
+  /*setParentNodes*/ false,
+  ts.ScriptKind.TS
+);
+
+console.log(node.statements[0]);
